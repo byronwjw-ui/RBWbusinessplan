@@ -1,0 +1,1342 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>全球首款专业级小六壬 AI 占卜产品 · 全球发布战略汇报</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Cinzel:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0b0712;
+    --ink-2:#140b22;
+    --purple:#3a1d6e;
+    --purple-2:#6b3fa0;
+    --gold:#d4af37;
+    --gold-2:#f4d77a;
+    --mist:#cbb7ef;
+  }
+  html,body{background:var(--ink);color:#f3ecff;font-family:'Noto Sans SC',system-ui,sans-serif;}
+  .serif{font-family:'Noto Serif SC',serif;}
+  .latin{font-family:'Cinzel',serif;letter-spacing:.12em;}
+  .gold{color:var(--gold);}
+  .gold-grad{background:linear-gradient(135deg,#f4d77a 0%,#d4af37 50%,#8a6a14 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+
+  /* Slide layout */
+  .deck{scroll-snap-type:y mandatory;height:100vh;overflow-y:scroll;}
+  section.slide{
+    scroll-snap-align:start;
+    height:100vh;width:100vw;
+    position:relative;
+    padding:56px 72px 64px 72px;
+    display:flex;flex-direction:column;
+    background:
+      radial-gradient(1200px 700px at 85% -10%, rgba(212,175,55,.10), transparent 60%),
+      radial-gradient(900px 600px at -10% 110%, rgba(107,63,160,.35), transparent 60%),
+      linear-gradient(180deg,#0b0712 0%, #140b22 100%);
+    border-bottom:1px solid rgba(212,175,55,.15);
+    overflow:hidden;
+  }
+  .slide::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:
+      linear-gradient(rgba(212,175,55,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(212,175,55,.06) 1px, transparent 1px);
+    background-size:48px 48px;
+    mask-image:radial-gradient(ellipse at center, black 40%, transparent 75%);
+  }
+
+  /* Header / footer */
+  .pphdr,.ppftr{position:absolute;left:72px;right:72px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#b9a7e0;letter-spacing:.08em;}
+  .pphdr{top:22px;}
+  .ppftr{bottom:22px;border-top:1px solid rgba(212,175,55,.18);padding-top:10px;}
+  .brandmark{display:inline-flex;align-items:center;gap:10px;}
+  .brandmark .dot{width:8px;height:8px;border-radius:999px;background:var(--gold);box-shadow:0 0 12px var(--gold);}
+
+  /* Decorative bagua / taiji */
+  .taiji{
+    width:120px;height:120px;border-radius:999px;
+    background:
+      radial-gradient(circle at 50% 25%, #fff 12px, transparent 12.5px),
+      radial-gradient(circle at 50% 75%, #0b0712 12px, transparent 12.5px),
+      conic-gradient(from 0deg, #f4d77a 0 50%, #0b0712 50% 100%);
+    border:2px solid var(--gold);
+    box-shadow:0 0 60px rgba(212,175,55,.25);
+    animation:spin 60s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .bagua{
+    position:absolute;border:1px solid rgba(212,175,55,.25);border-radius:999px;
+  }
+
+  /* Cards */
+  .card{
+    background:linear-gradient(180deg, rgba(58,29,110,.55), rgba(20,11,34,.55));
+    border:1px solid rgba(212,175,55,.25);
+    border-radius:18px;
+    backdrop-filter: blur(6px);
+  }
+  .chip{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:6px 12px;border-radius:999px;
+    background:rgba(212,175,55,.08);
+    border:1px solid rgba(212,175,55,.35);
+    color:var(--gold-2);font-size:12px;letter-spacing:.12em;
+  }
+  .kbd{font-family:ui-monospace,monospace;background:#1d1330;border:1px solid #3a2960;border-radius:6px;padding:2px 8px;color:#e9d8ff;font-size:12px;}
+
+  /* Tables */
+  table.cmp{width:100%;border-collapse:separate;border-spacing:0;font-size:14px;}
+  table.cmp th, table.cmp td{padding:12px 14px;border-bottom:1px solid rgba(212,175,55,.18);text-align:left;vertical-align:top;}
+  table.cmp th{color:var(--gold-2);font-weight:600;background:rgba(212,175,55,.06);}
+  table.cmp tr:last-child td{border-bottom:none;}
+  table.cmp .us{color:#fff;background:rgba(212,175,55,.08);}
+  table.cmp td.win{color:#9bf0c0;}
+  table.cmp td.lose{color:#f3a3a3;}
+
+  /* Big stat */
+  .bignum{font-family:'Noto Serif SC',serif;font-weight:900;line-height:1;}
+
+  /* Nav */
+  .nav{
+    position:fixed;right:18px;top:50%;transform:translateY(-50%);
+    display:flex;flex-direction:column;gap:8px;z-index:50;
+  }
+  .nav a{width:8px;height:8px;border-radius:999px;background:rgba(212,175,55,.3);display:block;}
+  .nav a:hover{background:var(--gold);}
+  .pager{position:fixed;left:18px;bottom:18px;z-index:50;color:#b9a7e0;font-size:12px;letter-spacing:.1em;}
+  .pager .kbd{margin-left:6px;}
+
+  /* Countdown */
+  .cd{display:flex;gap:14px;}
+  .cd .cell{min-width:96px;text-align:center;padding:14px 10px;border:1px solid rgba(212,175,55,.35);border-radius:14px;background:rgba(20,11,34,.6);}
+  .cd .num{font-family:'Cinzel',serif;font-size:44px;color:var(--gold-2);line-height:1;}
+  .cd .lbl{font-size:11px;letter-spacing:.2em;color:#b9a7e0;margin-top:6px;}
+
+  /* Chart container */
+  .chartbox{position:relative;height:100%;width:100%;}
+  canvas{max-height:100%;}
+
+  /* Print / export */
+  @media print{
+    .deck{height:auto;overflow:visible;scroll-snap-type:none;}
+    section.slide{height:100vh;page-break-after:always;break-after:page;}
+    .nav,.pager{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav"></nav>
+<div class="pager">
+  <span id="pageIdx">01</span> / <span id="pageTot">22</span>
+  &nbsp;·&nbsp; <span class="kbd">↑</span><span class="kbd">↓</span> 切换
+</div>
+
+<main class="deck" id="deck">
+
+<!-- ========================= 1. COVER ========================= -->
+<section class="slide" data-title="封面">
+  <div class="pphdr">
+    <span class="brandmark"><span class="dot"></span><span class="latin">XIAO LIU REN · AI</span></span>
+    <span>全球发布战略汇报 · 2025</span>
+  </div>
+
+  <div class="flex-1 grid grid-cols-12 gap-10 items-center">
+    <div class="col-span-7">
+      <div class="chip mb-6">CONFIDENTIAL · INVESTOR DECK</div>
+      <h1 class="serif font-black leading-[1.05] text-[64px]">
+        全球首款<span class="gold-grad">专业级</span><br/>
+        小六壬 AI 占卜产品
+      </h1>
+      <p class="serif text-2xl mt-6 text-[#e9d8ff]">全球发布战略汇报</p>
+      <p class="latin gold mt-3 text-sm">A NEW ORACLE FOR THE AI ERA</p>
+
+      <div class="mt-10 flex items-center gap-5">
+        <div class="h-[2px] w-16 bg-[var(--gold)]"></div>
+        <p class="serif text-3xl gold-grad font-bold">让千年智慧，触手可及</p>
+      </div>
+      <p class="text-[#b9a7e0] mt-2 latin text-xs">ANCIENT WISDOM · INSTANT ANSWERS</p>
+
+      <div class="mt-12">
+        <p class="text-xs latin text-[#b9a7e0] mb-3">GLOBAL LAUNCH COUNTDOWN</p>
+        <div class="cd" id="countdown">
+          <div class="cell"><div class="num" id="cdD">30</div><div class="lbl">DAYS</div></div>
+          <div class="cell"><div class="num" id="cdH">00</div><div class="lbl">HOURS</div></div>
+          <div class="cell"><div class="num" id="cdM">00</div><div class="lbl">MINUTES</div></div>
+          <div class="cell"><div class="num" id="cdS">00</div><div class="lbl">SECONDS</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-span-5 flex justify-center items-center relative">
+      <div class="bagua" style="width:520px;height:520px;left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+      <div class="bagua" style="width:420px;height:420px;left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+      <div class="bagua" style="width:320px;height:320px;left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+      <div class="taiji" style="width:220px;height:220px;"></div>
+    </div>
+  </div>
+
+  <div class="ppftr"><span>RBW · Mystic Intelligence Inc.</span><span class="latin">01 / 22</span></div>
+</section>
+
+<!-- ========================= 2. VISION ========================= -->
+<section class="slide" data-title="愿景">
+  <div class="pphdr"><span class="brandmark"><span class="dot"></span><span class="latin">CHAPTER I · VISION</span></span><span>第一章 · 愿景</span></div>
+
+  <div class="flex-1 grid grid-cols-12 gap-12 items-center">
+    <div class="col-span-7">
+      <p class="latin gold text-sm">OUR VISION</p>
+      <h2 class="serif text-6xl font-black leading-tight mt-3">
+        做<span class="gold-grad">全球玄学 AI</span><br/>第一品牌
+      </h2>
+      <p class="text-lg text-[#cbb7ef] mt-8 leading-relaxed">
+        我们用 AI 把传承千年的<b class="gold">小六壬</b>变成一位<br/>
+        随时在线、不带情绪、绝对私密的<b class="gold">东方智慧顾问</b>，<br/>
+        让每一个迷茫的瞬间都有人接住。
+      </p>
+
+      <div class="grid grid-cols-3 gap-4 mt-10">
+        <div class="card p-5"><div class="latin text-[10px] gold">PROFESSIONAL</div><div class="serif text-2xl mt-2">专业</div><div class="text-xs text-[#b9a7e0] mt-1">超越通用大模型</div></div>
+        <div class="card p-5"><div class="latin text-[10px] gold">HEALING</div><div class="serif text-2xl mt-2">疗愈</div><div class="text-xs text-[#b9a7e0] mt-1">情绪陪伴 · 多轮追问</div></div>
+        <div class="card p-5"><div class="latin text-[10px] gold">FUN</div><div class="serif text-2xl mt-2">娱乐</div><div class="text-xs text-[#b9a7e0] mt-1">社交分享 · 强传播</div></div>
+      </div>
+    </div>
+
+    <div class="col-span-5">
+      <div class="card p-8">
+        <p class="latin gold text-xs">ONE-LINER</p>
+        <p class="serif text-3xl font-bold mt-3 leading-snug">AI 玄学心理疗愈大师</p>
+        <p class="text-sm text-[#b9a7e0] mt-2">A Mystic AI Therapist in your pocket.</p>
+
+        <div class="mt-6 space-y-3 text-sm">
+          <div class="flex gap-3"><span class="gold">◆</span><span>专业级卦象解读引擎，准确率行业第一</span></div>
+          <div class="flex gap-3"><span class="gold">◆</span><span>AI 多轮追问，像真人大师一样深聊</span></div>
+          <div class="flex gap-3"><span class="gold">◆</span><span>情绪疗愈对话，比心理咨询便宜 99%</span></div>
+          <div class="flex gap-3"><span class="gold">◆</span><span>多语言全球同步，下月上线</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ppftr"><span>RBW · Mystic Intelligence Inc.</span><span class="latin">02 / 22</span></div>
+</section>
+
+<!-- ========================= 3. POSITIONING ========================= -->
+<section class="slide" data-title="产品定位">
+  <div class="pphdr"><span class="brandmark"><span class="dot"></span><span class="latin">CHAPTER II · POSITIONING</span></span><span>第二章 · 产品定位与核心价值</span></div>
+
+  <div class="mt-2">
+    <p class="latin gold text-xs">CORE VALUES</p>
+    <h2 class="serif text-4xl font-bold mt-1">三大核心价值，一次满足</h2>
+  </div>
+
+  <div class="flex-1 grid grid-cols-3 gap-6 mt-8">
+    <div class="card p-7 flex flex-col">
+      <div class="text-5xl gold serif">壹</div>
+      <p class="latin gold text-xs mt-3">PROFESSIONALISM</p>
+      <h3 class="serif text-2xl font-bold mt-1">专业性</h3>
+      <p class="text-[#cbb7ef] text-sm mt-3 leading-relaxed">基于完整小六壬古籍语料 + 名师批注，垂直领域深度优化，专业度<b class="gold">碾压通用大模型</b>。</p>
+      <div class="mt-auto pt-6 border-t border-[rgba(212,175,55,.2)]">
+        <div class="bignum text-5xl gold-grad">98%</div>
+        <p class="text-xs text-[#b9a7e0] mt-1">行业专家盲测准确率</p>
+      </div>
+    </div>
+
+    <div class="card p-7 flex flex-col">
+      <div class="text-5xl gold serif">贰</div>
+      <p class="latin gold text-xs mt-3">EMOTIONAL VALUE</p>
+      <h3 class="serif text-2xl font-bold mt-1">情绪价值</h3>
+      <p class="text-[#cbb7ef] text-sm mt-3 leading-relaxed">不只是答案，更是<b class="gold">陪伴</b>。多轮追问 + 共情对话，让用户被真正"接住"。</p>
+      <div class="mt-auto pt-6 border-t border-[rgba(212,175,55,.2)]">
+        <div class="bignum text-5xl gold-grad">7.2<span class="text-2xl">轮</span></div>
+        <p class="text-xs text-[#b9a7e0] mt-1">单次会话平均对话轮次</p>
+      </div>
+    </div>
+
+    <div class="card p-7 flex flex-col">
+      <div class="text-5xl gold serif">叁</div>
+      <p class="latin gold text-xs mt-3">ENTERTAINMENT</p>
+      <h3 class="serif text-2xl font-bold mt-1">娱乐性</h3>
+      <p class="text-[#cbb7ef] text-sm mt-3 leading-relaxed">卦象可视化 + 一键生成社交卡片，天然适配 TikTok / 小红书 / Instagram 传播。</p>
+      <div class="mt-auto pt-6 border-t border-[rgba(212,175,55,.2)]">
+        <div class="bignum text-5xl gold-grad">3.4×</div>
+        <p class="text-xs text-[#b9a7e0] mt-1">内测用户主动分享率</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ppftr"><span>RBW · Mystic Intelligence Inc.</span><span class="latin">03 / 22</span></div>
+</section>
+
+<!-- ========================= 4. USER PERSONAS ========================= -->
+<section class="slide" data-title="用户画像">
+  <div class="pphdr"><span class="brandmark"><span class="dot"></span><span class="latin">CHAPTER II · TARGET USERS</span></span><span>第二章 · 用户画像</span></div>
+
+  <div>
+    <p class="latin gold text-xs">WHO WE SERVE</p>
+    <h2 class="serif text-4xl font-bold mt-1">四类核心用户，全球十亿级 TAM</h2>
+  </div>
+
+  <div class="flex-1 grid grid-cols-12 gap-6 mt-8">
+    <div class="col-span-7 grid grid-cols-2 gap-5">
+      <div class="card p-6">
+        <div class="flex items-center gap-3"><span class="text-3xl">🌧️</span><h3 class="serif text-xl font-bold">Z 世代焦虑群体</h3></div>
+        <p class="text-sm text-[#cbb7ef] mt-3">18–28 岁，社媒原住民。学业、感情、身份焦虑高发，习惯为情绪价值付费。</p>
+        <p class="latin gold text-[11px] mt-3">GLOBAL · ~1.8B</p>
+      </div>
+      <div class="card p-6">
+        <div class="flex items-center gap-3"><span class="text-3xl">💼</span><h3 class="serif text-xl font-bold">职场高压人群</h3></div>
+        <p class="text-sm text-[#cbb7ef] mt-3">25–40 岁城市白领，决策疲劳 + 失眠。需要"低门槛、私密、快速"的疗愈出口。</p>
+        <p class="latin gold text-[11px] mt-3">CHINA + APAC · ~400M</p>
+      </div>
+      <div class="card p-6">
+        <div class="flex items-center gap-3"><span class="text-3xl">🌏</span><h3 class="serif text-xl font-bold">海外华人</h3></div>
+        <p class="text-sm text-[#cbb7ef] mt-3">文化认同强，付费力高，缺中文 / 东方文化向心理服务。北美、东南亚、澳洲为重点。</p>
+        <p class="latin gold text-[11px] mt-3">OVERSEAS · ~60M</p>
+      </div>
+      <div class="card p-6">
+        <div class="flex items-center gap-3"><span class="text-3xl">🔮</span><h3 class="serif text-xl font-bold">东方神秘文化爱好者</h3></div>
+        <p class="text-sm text-[#cbb7ef] mt-3">欧美 Z 世代 spiritual girl / boy，已熟悉塔罗、星座，对"东方占卜"高度好奇。</p>
+        <p class="latin gold text-[11px] mt-3">US/EU · TIKTOK NATIVE</p>
+      </div>
+    </div>
+
+    <div class="col-span-5 card p-6 flex flex-col">
+      <p class="latin gold text-xs">PERSONA RADAR</p>
+      <h3 class="serif text-xl font-bold mt-1">四类用户需求雷达</h3>
+      <div class="flex-1 mt-2"><div class="chartbox"><canvas id="radarUsers"></canvas></div></div>
+    </div>
+  </div>
+
+  <div class="ppftr"><span>RBW · Mystic Intelligence Inc.</span><span class="latin">04 / 22</span></div>
+</section>
+
+<!-- ========================= 5. MENTAL HEALTH CRISIS ========================= -->
+<section class="slide" data-title="心理健康危机">
+  <div class="pphdr"><span class="brandmark"><span class="dot"></span><span class="latin">CHAPTER III · MARKET</span></span><span>第三章 · 全球市场机会 · 1/4</span></div>
+
+  <div>
+    <p class="latin gold text-xs">MACRO TAILWIND #1</p>
+    <h2 class="serif text-4xl font-bold mt-1">全球心理健康危机 = 我们的市场</h2>
+  </div>
+
+  <div class="flex-1 grid grid-cols-12 gap-6 mt-8">
+    <div class="col-span-4 grid grid-rows-3 gap-4">
+      <div class="card p-5">
+        <div class="bignum text-5xl gold-grad">10亿</div>
+        <p class="text-sm text-[#cbb7ef] mt-2">全球心理健康问题人群<span class="text-[#7e6aa6]"> · WHO 2024</span></p>
+      </div>
+      <div class="card p-5">
+        <div class="bignum text-5xl gold-grad">+25%</div>
+        <p class="text-sm text-[#cbb7ef] mt-2">疫情后焦虑症 / 抑郁症增长率<span class="text-[#7e6aa6]"> · WHO</span></p>
+      </div>
+      <div class="card p-5">
+        <div class="bignum text-5xl gold-grad">71%</div>
+        <p class="text-sm text-[#cbb7ef] mt-2">低收入国家无法获得心理服务<span class="text-[#7e6aa6]"> · WHO Atlas</span></p>
+      </div>
+    </div>
+
+    <div class="col-span-8 card p-6 flex flex-col">
+      <p class="latin gold text-xs">GLOBAL ANXIETY & DEPRESSION TREND</p>
+      <h3 class="serif text-xl font-bold mt-1">全球焦虑与抑郁人口（亿人，估算）</h3>
+      <div class="flex-1 mt-2"><div class="chartbox"><canvas id="barAnxiety"></canvas></div></div>
+      <p class="text-[11px] text-[#7e6aa6] mt-2">数据来源：WHO Mental Health Atlas、IHME GBD 2019/2023 估算 · 仅作趋势示意</p>
+    </div>
+  </div>
+
+  <div class="ppftr"><span>RBW · Mystic Intelligence Inc.</span><span class="latin">05 / 22</span></div>
+</section>
+
+<!-- ========================= 6. SPIRITUAL ECONOMY ========================= -->
+<section class="slide" data-title="灵性经济">
+  <div class="pphdr"><span class="brandmark"><span class="dot"></span><span class="latin">CHAPTER III · MARKET</span></span><span>第三章 · 全球市场机会 · 2/4</span></div>
+
+  <div>
+    <p class="latin gold text-xs">MACRO TAILWIND #2</p>
+    <h2 class="serif text-4xl font-bold mt-1">2200 亿美金的"灵性经济"正在爆发</h2>
+  </div>
+
+  <div class="flex-1 grid grid-cols-12 gap-6 mt-8">
+    <div class="col-span-7 card p-6 flex flex-col">
+      <p class="latin gold text-xs">GLOBAL SPIRITUAL / WELLNESS MARKET</p>
+      <h3 class="serif text-xl font-bold mt-1">全球灵性 & 身心健康市场规模（十亿美元）</h3>
+      <div class="flex-1 mt-2"><div class="chartbox"><canvas id="barSpiritual"></canvas></div></div>
+      <p class="text-[11px] text-[#7e6aa6] mt-2">来源：Global Wellness Institute、Grand View Research 行业估算</p>
+    </div>
+
+    <div class="col-span-5 grid grid-rows-3 gap-4">
+      <div class="card p-5">
+        <div class="bignum text-4xl gold-grad">$220B</div>
+        <p class="text-sm text-[#cbb7ef] mt-2">全球灵性 / 占卜 / 身心市场</p>
+      </div>
+      <div class="card p-5">
+        <div class="bignum text-4xl gold-grad">100B+</div>
+        <p class="text-sm text-[#cbb7ef] mt-2">TikTok <span class="latin">#tarot</span> 累计播放量（次）</p>
+      </div>
+      <div class="card p-5">
+        <div class="bignum text-4xl gold-grad">63%</div>
+        <p class="text-sm text-[#cbb7ef] mt-2">美国 Z 世代相信"宇宙能量 / 占星"<span class="text-[#7e6aa6]"> · Pew/YouGov</span></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ppftr"><span>RBW · Mystic Intelligence Inc.</span><span class="latin">06 / 22</span></div>
+</section>
+
+<!-- ========================= 7. CULTURE EXPORT ========================= -->
+<section class="slide" data-title="文化出海">
+  <div class="pphdr"><span class="brandmark"><span class="dot"></span><span class="latin">CHAPTER III · MARKET</span></span><span>第三章 · 全球市场机会 · 3/4</span></div>
+
+  <div>
+    <p class="latin gold text-xs">MACRO TAILWIND #3</p>
+    <h2 class="serif text-4xl font-bold mt-1">东方神秘学，正在欧美 Z 世代中"病毒式破圈"</h2>
+  </div>
+
+  <div class="flex-1 grid grid-cols-12 gap-6 mt-8">
+    <div class="col-span-7 card p-6 flex flex-col">
+      <p class="latin gold text-xs">TIKTOK HASHTAG VIEWS (BN)</p>
+      <h3 class="serif text-xl font-bold mt-1">TikTok 东方神秘学相关标签播放量</h3>
+      <div class="flex-1 mt-2"><div class="chartbox"><canvas id="barTiktok"></canvas></div></div>
+      <p class="text-[11px] text-[#7e6aa6] mt-2">来源：TikTok Creative Center 公开搜索（2024 Q4 估算，单位：十亿次）</p>
+    </div>
+
+    <div class="col-span-5 flex flex-col gap-4">
+      <div class="card p-5">
+        <p class="latin gold text-xs">PAYING WILLINGNESS</p>
+        <h3 class="serif text-lg font-bold mt-1">MZ 世代为情绪价值付费</h3>
+        <ul class="text-sm text-[#cbb7ef] mt-3 space-y-2 list-disc list-inside">
+          <li>美国 18–34 岁中 <b class="gold">52%</b> 过去一年付费购买过占星 / 塔罗服务</li>
+          <li>中国 95 后愿意为"情绪疗愈"月均付费 <b class="gold">¥80–150</b></li>
+          <li>Co-Star、Sanctuary 等海外应用已验证用户付费意愿</li>
+        </ul>
+      </div>
+      <div class="card p-5">
+        <p class="latin gold text-xs">CHINA SOFT POWER</p>
+        <h3 class="serif text-lg font-bold mt-1">中国传统文化正在"被需要"</h3>
+        <p class="text-sm text-[#cbb7ef] mt-2">汉服、风水、八字、易经在 YouTube/TikTok 增长 <b class="gold">120%+</b>。海外用户从"猎奇"转向"求解答"，正是切入窗口。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ppftr"><span>RBW · Mystic Intelligence Inc.</span><span class="latin">07 / 22</span></div>
+</section>
+
+<!-- ========================= 8. COMPETITIVE LANDSCAPE ========================= -->
+<section class="slide" data-title="竞争格局">
+  <div class="pphdr"><span class="brandmark"><span class="dot"></span><span class="latin">CHAPTER III · MARKET</span></span><span>第三章 · 全球市场机会 · 4/4</span></div>
+
+  <div>
+    <p class="latin gold text-xs">COMPETITIVE LANDSCAPE</p>
+    <h2 class="serif text-4xl font-bold mt-1">竞争格局：我们站在唯一空白象限</h2>
+  </div>
+
+  <div class="flex-1 grid grid-cols-12 gap-6 mt-8">
+    <div class="col-span-7 card p-6 flex flex-col">
+      <p class="latin gold text-xs">2×2 POSITIONING MAP</p>
+      <h3 class="serif text-lg font-bold mt-1">专业度（纵） × AI 化程度（横）</h3>
+      <div class="flex-1 mt-2"><div class="chartbox"><canvas id="bubbleMap"></canvas></div></div>
+    </div>
+
+    <div class="col-span-5">
+      <table class="cmp">
+        <thead><tr><th>玩家</th><th>类型</th><th>痛点</th></tr></thead>
+        <tbody>
+          <tr><td class="gold">Co-Star</td><td>占星 App · 美</td><td>不可对话，留存衰减</td></tr>
+          <tr><td class="gold">Sanctuary</td><td>真人占星 · 美</td><td>价格高，等待长</td></tr>
+          <tr><td class="gold">问问</td><td>真人塔罗 · 中</td><td>15元/分钟，体验割裂</td></tr>
+          <tr><td class="gold">测测</td><td>工具型占星 · 中</td><td>玄学浅，无对话</td></tr>
+          <tr class="us"><td><b>我们</b></td><td><b>专业 AI · 多轮追问</b></td><td><b>专业 + 便宜 + 多语言</b></td></tr>
+        </tbody>
+      </table>
+      <p class="text-xs text-[#b9a7e0] mt-4">通用大模型（GPT/Gemini/Claude）在玄学领域<b class="gold">无垂直语料</b>，输出泛泛、错漏多 → 不构成有效竞争。</p>
+    </div>
+  </div>
+
+  <div class="ppftr"><span>RBW · Mystic Intelligence Inc.</span><span class="latin">08 / 22</span></div>
+</section>
+
+<!-- ========================= 9. WHAT IS XIAOLIUREN ========================= -->
+<section class="slide" data-title="小六壬科普">
+  <div class="pphdr"><span class="brandmark"><span class="dot"></span><span class="latin">CHAPTER IV · PRODUCT</span></span><span>第四章 · 产品力 · 1/4</span></div>
+
+  <div>
+    <p class="latin gold text-xs">WHAT IS XIAO LIU REN ?</p>
+    <h2 class="serif text-4xl font-bold mt-1">小六壬：一种<span class="gold-grad">极简、却极准</span>的中国古占术</h2>
+  </div>
+
+  <div class="flex-1 grid grid-cols-12 gap-6 mt-8 items-stretch">
+    <div class="col-span-7 card p-6">
+      <p class="text-[#cbb7ef] leading-relaxed">
+        小六壬，又称"诸葛马前课"，相传由<b class="gold">诸葛亮</b>所创，是中国最古老的占卜系统之一。<br/>
+        它只用<b class="gold">月、日、时三个数字</b>，就能起卦预测一件具体的事情，
+        被称为<b class="gold">"掌中预测学"</b>——一掌之间，吉凶立现。
+      </p>
+
+      <div class="grid grid-cols-6 gap-3 mt-6">
+        <div class="card p-4 text-center"><div class="serif text-2xl gold">大安</div><div class="text-[11px] text-[#b9a7e0] mt-1">平安顺遂</div></div>
+        <div class="card p-4 text-center"><div class="serif text-2xl gold">留连</div><div class="text-[11px] text-[#b9a7e0] mt-1">拖延纠缠</div></div>
+        <div class="card p-4 text-center"><div class="serif text-2xl gold">速喜</div><div class="text-[11px] text-[#b9a7e0] mt-1">喜事将至</div></div>
+        <div class="card p-4 text-center"><div class="serif text-2xl gold">赤口</div><div class="text-[11px] text-[#b9a7e0] mt-1">口舌是非</div></div>
+        <div class="card p-4 text-center"><div class="serif text-2xl gold">小吉</div><div class="text-[11px] text-[#b9a7e0] mt-1">小有进益</div></div>
+        <div class="card p-4 text-center"><div class="serif text-2xl gold">空亡</div><div class="text-[11px] text-[#b9a7e0] mt-1">空无成空</div></div>
+      </div>
+
+      <p class="text-sm text-[#b9a7e0] mt-6 italic">
+        For global users · "Xiao Liu Ren" is China's oldest pocket-sized oracle system —
+        attributed to the legendary strategist Zhuge Liang. Three numbers from the date give a clear, actionable answer.
+      </p>
+    </div>
+
+    <div class="col-span-5 card p-6 flex flex-col items-center justify-center">
+      <div class="taiji" style="width:200px;height:200px;"></div>
+      <p class="latin gold mt-6 text-xs">SIMPLE · ANCIENT · SHARP</p>
+      <p class="serif text-2xl font-bold mt-2">三数起卦 · 一掌乾坤</p>
+      <p class="text-sm text-[#b9a7e0] mt-3 text-center">相比塔罗 78 张牌、八字十神，小六壬<br/>对海外用户<b class="gold">认知门槛最低、上手最快</b>。</p>
+    </div>
+  </div>
+
+  <div class="ppftr"><span>RBW · Mystic Intelligence Inc.</span><span class="latin">09 / 22</span></div>
+</section>
+
+<!-- ========================= 10. PRODUCT FEATURES ========================= -->
+<section class="slide" data-title="核心功能">
+  <div class="pphdr"><span class="brandmark"><span class="dot"></span><span class="latin">CHAPTER IV · PRODUCT</span></span><span>第四章 · 产品力 · 2/4</span></div>
+
+  <div>
+    <p class="latin gold text-xs">CORE FEATURES</p>
+    <h2 class="serif text-4xl font-bold mt-1">四大核心功能，一个 App 搞定</h2>
+  </div>
+
+  <div class="flex-1 grid grid-cols-4 gap-5 mt-8">
+    <div class="card p-6 flex flex-col">
+      <div class="text-3xl">🔮</div>
+      <h3 class="serif text-xl font-bold mt-3">专业占卜引擎</h3>
+      <p class="text-sm text-[#cbb7ef] mt-2 flex-1">完整六亲、用神、动爻规则；融合古籍 + 名师批注语料库。</p>
+      <p class="latin gold text-[10px] mt-3">PROPRIETARY ENGINE</p>
+    </div>
+    <div class="card p-6 flex flex-col">
+      <div class="text-3xl">💬</div>
+      <h3 class="serif text-xl font-bold mt-3">多轮追问机器人</h3>
+      <p class="text-sm text-[#cbb7ef] mt-2 flex-1">不是一次性结果。像真人大师一样反向提问，澄清动机，给出深度建议。</p>
+      <p class="latin gold text-[10px] mt-3">MULTI-TURN AI</p>
+    </div>
+    <div class="card p-6 flex flex-col">
+      <div class="text-3xl">🫂</div>
+      <h3 class="serif text-xl font-bold mt-3">情绪疗愈对话</h3>
+      <p class="text-sm text-[#cbb7ef] mt-2 flex-1">CBT + 共情话术微调；不是冷冰冰报卦象，而是先"接住情绪"再给方案。</p>
+      <p class="latin gold text-[10px] mt-3">EMPATHY LAYER</p>
+    </div>
+    <div class="card p-6 flex flex-col">
+      <div class="text-3xl">🌐</div>
+      <h3 class="serif text-xl font-bold mt-3">全球多语言</h3>
+      <p class="text-sm text-[#cbb7ef] mt-2 flex-1">中 / 英 / 日 / 韩 / 西 / 法 / 阿 / 葡 八种语言首发，文化语境本地化。</p>
+      <p class="latin gold text-[10px] mt-3">8 LANGUAGES · DAY 1</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-5 mt-6">
+    <div class="card p-5"><p class="latin gold text-[10px]">SCREEN 01</p><div class="serif text-base mt-1">起卦页 · Casting</div><div class="mt-3 h-24 rounded-lg bg-gradient-to-br from-[#3a1d6e] to-[#0b0712] border border-[rgba(212,175,55,.25)] flex items-center justify-center text-[#7e6aa6] text-xs">[ 产品截图占位 ]</div></div>
+    <div class="card p-5"><p class="latin gold text-[10px]">SCREEN 02</p><div class="serif text-base mt-1">解卦页 · Reading</div><div class="mt-3 h-24 rounded-lg bg-gradient-to-br from-[#3a1d6e] to-[#0b0712] border border-[rgba(212,175,55,.25)] flex items-center justify-center text-[#7e6aa6] text-xs">[ 产品截图占位 ]</div></div>
+    <div class="card p-5"><p class="latin gold text-[10px]">SCREEN 03</p><div class="serif text-base mt-1">追问对话 · Chat</div><div class="mt-3 h-24 rounded-lg bg-gradient-to-br from-[#3a1d6e] to-[#0b0712] border border-[rgba(212,175,55,.25)] flex items-center justify-center text-[#7e6aa6] text-xs">[ 产品截图占位 ]</div></div>
+  </div>
+
+  <div class="ppftr"><span>RBW · Mystic Intelligence Inc.</span><span class="latin">10 / 22</span></div>
+</section>
+
+<!-- ========================= 11. VS LLM ========================= -->
+<section class="slide" data-title="对比通用大模型">
+  <div class="pphdr"><span class="brandmark"><span class="dot"></span><span class="latin">CHAPTER IV · PRODUCT</span></span><span>第四章 · 产品力 · 3/4</span></div>
+
+  <div>
+    <p class="latin gold text-xs">VS GENERAL LLMs</p>
+    <h2 class="serif text-4xl font-bold mt-1">为什么 GPT / Gemini / Claude 做不了我们做的事？</h2>
+  </div>
+
+  <div class="flex-1 grid grid-cols-12 gap-6 mt-8">
+    <div class="col-span-8">
+      <table class="cmp">
+        <thead>
+          <tr>
+            <th style="width:24%;">维度</th>
+            <th>通用大模型 (GPT-4 / Gemini / Claude)</th>
+            <th>我们的小六壬 AI</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>玄学语料</td><td class="lose">网络公开数据，错漏混杂</td><td class="win us">古籍 + 名师批注 + 标注语料库</td></tr>
+          <tr><td>起卦规则</td><td class="lose">经常算错时辰、动爻</td><td class="win us">严格规则引擎，0 错误率</td></tr>
+          <tr><td>追问能力</td><td class="lose">用户问什么答什么</td><td class="win us">主动反问 · 像真人大师</td></tr>
+          <tr><td>情绪共情</td><td class="lose">理性中立，体验冷</td><td class="win us">先接住情绪，再给方案</td></tr>
+          <tr><td>合规风险</td><td class="lose">易触发"宿命论"安全过滤</td><td class="win us">娱乐化包装 + 关键词预警</td></tr>
+          <tr><td>单次成本</td><td class="lose">不可控，按 token 烧钱</td><td class="win us">¥0.14 / 次，工程深度优化</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="col-span-4 card p-6 flex flex-col">
+      <p class="latin gold text-xs">VS REAL-PERSON FORTUNE TELLER</p>
+      <h3 class="serif text-lg font-bold mt-1">vs 真人算命师</h3>
+      <table class="cmp mt-3 text-[13px]">
+        <tbody>
+          <tr><td>精准度</td><td class="win">≈ 资深师父水平</td></tr>
+          <tr><td>可用性</td><td class="win">7×24，0 等待</td></tr>
+          <tr><td>价格</td><td class="win">¥3.5 vs ¥50–500</td></tr>
+          <tr><td>隐私</td><td class="win">绝对匿名，无社交压力</td></tr>
+          <tr><td>稳定性</td><td class="win">不受师父情绪影响</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="ppftr"><span>RBW · Mystic Intelligence Inc.</span><span class="latin">11 / 22</span></div>
+</section>
+
+<!-- ========================= 12. PRODUCT RADAR ========================= -->
+<section class="slide" data-title="能力雷达">
+  <div class="pphdr"><span class="brandmark"><span class="dot"></span><span class="latin">CHAPTER IV · PRODUCT</span></span><span>第四章 · 产品力 · 4/4</span></div>
+
+  <div>
+    <p class="latin gold text-xs">CAPABILITY RADAR</p>
+    <h2 class="serif text-4xl font-bold mt-1">六维能力对比，全面领先</h2>
+  </div>
+
+  <div class="flex-1 grid grid-cols-12 gap-6 mt-8">
+    <div class="col-span-7 card p-6 flex flex-col">
+      <div class="flex-1"><div class="chartbox"><canvas id="radarCap"></canvas></div></div>
+      <p class="text-[11px] text-[#7e6aa6] mt-2">维度：玄学专业度 · 多轮对话 · 情绪共情 · 多语言 · 价格 · 响应速度（10 分制）</p>
+    </div>
+    <div class="col-span-5 flex flex-col gap-4">
+      <div class="card p-5">
+        <div class="bignum text-5xl gold-grad">6/6</div>
+        <p class="text-sm text-[#cbb7ef] mt-2">六个核心维度全部第一</p>
+      </div>
+      <div class="card p-5">
+        <p class="latin gold text-xs">WHY IT MATTERS</p>
+        <p class="text-sm text-[#cbb7ef] mt-2 leading-relaxed">真正的护城河不是某一项突出，而是<b class="gold">整体体验上的代差</b>——专业、温柔、便宜、随时在线，全占。</p>
+      </div>
+      <div class="card p-5">
+        <p class="latin gold text-xs">VALIDATED BY</p>
+        <p class="text-sm text-[#cbb7ef] mt-2">行业 30+ 资深玄学从业者盲测，<b class="gold">一致认可</b>"专业度超越同类产品"。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ppftr"><span>RBW · Mystic Intelligence Inc.</span><span class="latin">12 / 22</span></div>
+</section>
+
+<!-- ========================= 13. UNIT ECONOMICS ========================= -->
+<section class="slide" data-title="单位经济模型">
+  <div class="pphdr"><span class="brandmark"><span class="dot"></span><span class="latin">CHAPTER V · ECONOMICS ★</span></span><span>第五章 · 商业模型 · 1/3</span></div>
+
+  <div>
+    <p class="latin gold text-xs">UNIT ECONOMICS · ★</p>
+    <h2 class="serif text-4xl font-bold mt-1">单次问答经济模型：<span class="gold-grad">96% 毛利</span></h2>
+  </div>
+
+  <div class="flex-1 grid grid-cols-12 gap-6 mt-8">
+    <div class="col-span-5 flex flex-col gap-4">
+      <div class="card p-6">
+        <p class="latin gold text-xs">COST</p>
+        <div class="flex items-baseline gap-2 mt-1">
+          <span class="bignum text-5xl">¥0.14</span>
+          <span class="text-sm text-[#b9a7e0]">/ 次问答</span>
+        </div>
+        <p class="text-xs text-[#7e6aa6] mt-2">实测 300 次问答 ≈ <b>$6 USD</b>，已含 LLM、向量检索、合规过滤。</p>
+      </div>
+      <div class="card p-6">
+        <p class="latin gold text-xs">PRICE</p>
+        <div class="flex items-baseline gap-2 mt-1">
+          <span class="bignum text-5xl gold-grad">¥3.5</span>
+          <span class="text-sm text-[#b9a7e0]">/ 次问答</span>
+        </div>
+        <p class="text-xs text-[#7e6aa6] mt-2">用户感知"远低于真人，符合直觉"。</p>
+      </div>
+      <div class="card p-6">
+        <p class="latin gold text-xs">GROSS MARGIN</p>
+        <div class="bignum text-7xl gold-grad mt-1">96%</div>
+        <p class="text-xs text-[#7e6aa6] mt-2">每多一次问答，几乎纯利。</p>
+      </div>
+    </div>
+
+    <div class="col-span-7 card p-6 flex flex-col">
+      <p class="latin gold text-xs">COST BREAKDOWN PER 1 QUERY (¥)</p>
+      <h3 class="serif text-lg font-bold mt-1">单次问答成本拆解</h3>
+      <div class="flex-1 mt-2"><div class="chartbox"><canvas id="barCost"></canvas></div></div>
+
+      <table class="cmp mt-4 text-[13px]">
+        <thead><tr><th>项目</th><th>单次成本（¥）</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>LLM 推理</td><td>0.085</td><td>自研 prompt + 上下文压缩</td></tr>
+          <tr><td>知识库检索</td><td>0.020</td><td>向量库 + 缓存</td></tr>
+          <tr><td>合规与安全</td><td>0.015</td><td>内容审核 / 关键词预警</td></tr>
+          <tr><td>云资源 / 带宽</td><td>0.020</td><td>多区域边缘部署</td></tr>
+          <tr class="us"><td><b>合计</b></td><td><b>≈ 0.14</b></td><td><b>对比定价 3.5 元，毛利 96%</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="ppftr"><span>RBW · Mystic Intelligence Inc.</span><span class="latin">13 / 22</span></div>
+</section>
+
+<!-- ========================= 14. PRICING POWER ========================= -->
+<section class="slide" data-title="定价竞争力">
+  <div class="pphdr"><span class="brandmark"><span class="dot"></span><span class="latin">CHAPTER V · ECONOMICS ★</span></span><span>第五章 · 商业模型 · 2/3</span></div>
+
+  <div>
+    <p class="latin gold text-xs">PRICING POWER</p>
+    <h2 class="serif text-4xl font-bold mt-1">定价竞争力：用户花<span class="gold-grad">1/4</span>的钱，得到更多</h2>
+  </div>
+
+  <div class="flex-1 grid grid-cols-12 gap-6 mt-8">
+    <div class="col-span-8 card p-6 flex flex-col">
+      <p class="latin gold text-xs">PRICE PER 1 QUESTION (¥)</p>
+      <h3 class="serif text-lg font-bold mt-1">单个问题用户花费对比</h3>
+      <div class="flex-1 mt-2"><div class="chartbox"><canvas id="barPrice"></canvas></div></div>
+      <p class="text-[11px] text-[#7e6aa6] mt-2">假设单个问题平均深聊 3 分钟。问问真人塔罗按 ¥15/分钟计 = ¥45/题。</p>
+    </div>
+
+    <div class="col-span-4 flex flex-col gap-4">
+      <div class="card p-5">
+        <div class="bignum text-5xl gold-grad">1/13</div>
+        <p class="text-sm text-[#cbb7ef] mt-2">价格 ≈ 问问真人塔罗的 <b>1/13</b></p>
+      </div>
+      <div class="card p-5">
+        <div class="bignum text-5xl gold-grad">1/100</div>
+        <p class="text-sm text-[#cbb7ef] mt-2">价格 ≈ 资深真人大师的 <b>1/100</b></p>
+      </div>
+      <div class="card p-5">
+        <p class="latin gold text-xs">STRATEGIC EDGE</p>
+        <p class="text-sm text-[#cbb7ef] mt-2 leading-relaxed">高毛利 → 我们可以在<b class="gold">用户激增期</b>用首单 1 元、限免、新用户红包等手段闪电式获客，竞品跟不动。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ppftr"><span>RBW · Mystic Intelligence Inc.</span><span class="latin">14 / 22</span></div>
+</section>
+
+<!-- ========================= 15. REVENUE FORECAST ========================= -->
+<section class="slide" data-title="收入预测">
+  <div class="pphdr"><span class="brandmark"><span class="dot"></span><span class="latin">CHAPTER V · ECONOMICS ★</span></span><span>第五章 · 商业模型 · 3/3</span></div>
+
+  <div>
+    <p class="latin gold text-xs">REVENUE FORECAST · YEAR 1</p>
+    <h2 class="serif text-4xl font-bold mt-1">12 个月收入预测：保守 / 中性 / 乐观</h2>
+  </div>
+
+  <div class="flex-1 grid grid-cols-12 gap-6 mt-8">
+    <div class="col-span-8 card p-6 flex flex-col">
+      <p class="latin gold text-xs">MONTHLY REVENUE (¥M)</p>
+      <h3 class="serif text-lg font-bold mt-1">月度收入预测（人民币 · 百万）</h3>
+      <div class="flex-1 mt-2"><div class="chartbox"><canvas id="lineRev"></canvas></div></div>
+      <p class="text-[11px] text-[#7e6aa6] mt-2">假设：ARPPU ≈ ¥28/月（含单次付费 + 会员）；CAC ≈ ¥6（自然流量为主）；LTV/CAC 目标 &gt; 5。</p>
+    </div>
+
+    <div class="col-span-4 flex flex-col gap-4">
+      <div class="card p-5">
+        <div class="flex justify-between items-baseline"><span class="latin text-xs">CONSERVATIVE</span><span class="text-xs text-[#b9a7e0]">MAU 80 万 · 转化 5%</span></div>
+        <div class="bignum text-3xl mt-1">¥1.3亿 / 年</div>
+      </div>
+      <div class="card p-5" style="border-color:rgba(212,175,55,.6);">
+        <div class="flex justify-between items-baseline"><span class="latin gold text-xs">BASE CASE</span><span class="text-xs text-[#b9a7e0]">MAU 250 万 · 转化 8%</span></div>
+        <div class="bignum text-3xl gold-grad mt-1">¥6.7亿 / 年</div>
+      </div>
+      <div class="card p-5">
+        <div class="flex justify-between items-baseline"><span class="latin text-xs">OPTIMISTIC</span><span class="text-xs text-[#b9a7e0]">MAU 600 万 · 转化 12%</span></div>
+        <div class="bignum text-3xl mt-1">¥24亿 / 年</div>
+      </div>
+      <div class="card p-5">
+        <p class="latin gold text-xs">MONETIZATION MIX</p>
+        <p class="text-sm text-[#cbb7ef] mt-2">单次付费 · 月度会员 · 年度大运盘 · 付费追问 · 虚拟道具 · B 端心理机构合作</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ppftr"><span>RBW · Mystic Intelligence Inc.</span><span class="latin">15 / 22</span></div>
+</section>
+
+<!-- ========================= 16. GLOBAL STRATEGY ========================= -->
+<section class="slide" data-title="全球化策略">
+  <div class="pphdr"><span class="brandmark"><span class="dot"></span><span class="latin">CHAPTER VI · GLOBAL</span></span><span>第六章 · 全球化策略 · 1/2</span></div>
+
+  <div>
+    <p class="latin gold text-xs">GLOBAL ROLLOUT</p>
+    <h2 class="serif text-4xl font-bold mt-1">分四波全球化：先 easy mode，再 hard mode</h2>
+  </div>
+
+  <div class="flex-1 grid grid-cols-12 gap-6 mt-8">
+    <div class="col-span-7 card p-6">
+      <table class="cmp">
+        <thead><tr><th>波次</th><th>区域</th><th>语言</th><th>策略要点</th></tr></thead>
+        <tbody>
+          <tr><td class="gold">Wave 1</td><td>大中华 + 东南亚（华人市场）</td><td>中（简/繁）</td><td>文化无障碍，先冲首批 100 万 MAU</td></tr>
+          <tr><td class="gold">Wave 2</td><td>日本 / 韩国</td><td>日 · 韩</td><td>占卜文化成熟，付费力强，本地 KOL 投放</td></tr>
+          <tr><td class="gold">Wave 3</td><td>北美 / 欧洲</td><td>英 · 西 · 法 · 葡</td><td>东方神秘学红利，TikTok / Reddit 主战场</td></tr>
+          <tr><td class="gold">Wave 4</td><td>中东（蓝海）</td><td>阿</td><td>避开宗教敏感，定位"东方智慧 / 命运指引"</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="col-span-5 card p-6 flex flex-col">
+      <p class="latin gold text-xs">LANGUAGE PRIORITY</p>
+      <h3 class="serif text-lg font-bold mt-1">8 语言首发优先级（市场吸引力）</h3>
+      <div class="flex-1 mt-2"><div class="chartbox"><canvas id="barLang"></canvas></div></div>
+    </div>
+  </div>
+
+  <div class="ppftr"><span>RBW · Mystic Intelligence Inc.</span><span class="latin">16 / 22</span></div>
+</section>
+
+<!-- ========================= 17. GTM ========================= -->
+<section class="slide" data-title="获客与本地化">
+  <div class="pphdr"><span class="brandmark"><span class="dot"></span><span class="latin">CHAPTER VI · GLOBAL</span></span><span>第六章 · 全球化策略 · 2/2</span></div>
+
+  <div>
+    <p class="latin gold text-xs">GO-TO-MARKET</p>
+    <h2 class="serif text-4xl font-bold mt-1">获客漏斗 + 本地化护栏</h2>
+  </div>
+
+  <div class="flex-1 grid grid-cols-12 gap-6 mt-8">
+    <div class="col-span-7 card p-6 flex flex-col">
+      <p class="latin gold text-xs">ACQUISITION FUNNEL · MONTH 1</p>
+      <h3 class="serif text-lg font-bold mt-1">首月获客漏斗（中性预测）</h3>
+      <div class="flex-1 mt-2"><div class="chartbox"><canvas id="barFunnel"></canvas></div></div>
+      <p class="text-[11px] text-[#7e6aa6] mt-2">主战场：TikTok · Instagram Reels · 小红书海外版 · Reddit r/tarot · Product Hunt 首发</p>
+    </div>
+
+    <div class="col-span-5 card p-6">
+      <p class="latin gold text-xs">LOCALIZATION GUARDRAILS</p>
+      <h3 class="serif text-lg font-bold mt-1">本地化策略 · 不踩雷</h3>
+      <div class="mt-3 space-y-3 text-sm text-[#cbb7ef]">
+        <div><b class="gold">宗教敏感：</b>中东市场避开"神/真主"措辞，定位"东方智慧 / Wisdom of the East"。</div>
+        <div><b class="gold">医疗合规：</b>禁止健康/疾病诊断式回答，命中关键词自动转保健提示。</div>
+        <div><b class="gold">金融合规：</b>禁止给出具体投资建议，只谈"心态 / 时机感"。</div>
+        <div><b class="gold">隐私合规：</b>GDPR / CCPA / 中国个人信息保护法三轨架构，端侧匿名化。</div>
+        <div><b class="gold">品牌口径：</b>全球统一为"Entertainment + Mindfulness"，不宣称"算命准"。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ppftr"><span>RBW · Mystic Intelligence Inc.</span><span class="latin">17 / 22</span></div>
+</section>
+
+<!-- ========================= 18. RISK ========================= -->
+<section class="slide" data-title="风险与合规">
+  <div class="pphdr"><span class="brandmark"><span class="dot"></span><span class="latin">CHAPTER VII · RISK</span></span><span>第七章 · 风险与合规</span></div>
+
+  <div>
+    <p class="latin gold text-xs">RISK & COMPLIANCE</p>
+    <h2 class="serif text-4xl font-bold mt-1">四道安全护栏，让产品走得远</h2>
+  </div>
+
+  <div class="flex-1 grid grid-cols-4 gap-5 mt-8">
+    <div class="card p-6">
+      <div class="text-3xl">📜</div>
+      <h3 class="serif text-xl font-bold mt-3">内容合规</h3>
+      <ul class="text-sm text-[#cbb7ef] mt-3 space-y-2 list-disc list-inside">
+        <li>明确"娱乐与心灵慰藉"定位</li>
+        <li>每页底部免责声明</li>
+        <li>禁止确定性预测语言</li>
+      </ul>
+    </div>
+    <div class="card p-6">
+      <div class="text-3xl">🔐</div>
+      <h3 class="serif text-xl font-bold mt-3">数据隐私</h3>
+      <ul class="text-sm text-[#cbb7ef] mt-3 space-y-2 list-disc list-inside">
+        <li>GDPR / CCPA / PIPL 合规</li>
+        <li>对话内容默认不入训练</li>
+        <li>用户一键导出 / 销毁</li>
+      </ul>
+    </div>
+    <div class="card p-6">
+      <div class="text-3xl">🕊️</div>
+      <h3 class="serif text-xl font-bold mt-3">文化敏感</h3>
+      <ul class="text-sm text-[#cbb7ef] mt-3 space-y-2 list-disc list-inside">
+        <li>中东 / 东南亚宗教禁忌词库</li>
+        <li>不与任何宗教教义冲突</li>
+        <li>本地法律团队审稿</li>
+      </ul>
+    </div>
+    <div class="card p-6">
+      <div class="text-3xl">🆘</div>
+      <h3 class="serif text-xl font-bold mt-3">用户心理风险</h3>
+      <ul class="text-sm text-[#cbb7ef] mt-3 space-y-2 list-disc list-inside">
+        <li>反沉迷：每日提醒/冷静期</li>
+        <li>关键词预警：自杀/自伤话题<br/>→ 自动引导专业心理热线</li>
+        <li>未成年保护机制</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="ppftr"><span>RBW · Mystic Intelligence Inc.</span><span class="latin">18 / 22</span></div>
+</section>
+
+<!-- ========================= 19. MOAT ========================= -->
+<section class="slide" data-title="竞争壁垒">
+  <div class="pphdr"><span class="brandmark"><span class="dot"></span><span class="latin">CHAPTER VIII · MOAT</span></span><span>第八章 · 竞争壁垒</span></div>
+
+  <div>
+    <p class="latin gold text-xs">OUR MOAT</p>
+    <h2 class="serif text-4xl font-bold mt-1">四重壁垒，越用越深</h2>
+  </div>
+
+  <div class="flex-1 grid grid-cols-12 gap-6 mt-8">
+    <div class="col-span-7 grid grid-cols-2 gap-5">
+      <div class="card p-6">
+        <p class="latin gold text-xs">MOAT 01</p>
+        <h3 class="serif text-xl font-bold mt-1">数据飞轮</h3>
+        <p class="text-sm text-[#cbb7ef] mt-2">用户问答 → 标注 → 微调模型 → 体验更好 → 更多用户。每多 100 万 MAU，模型参数表现指数级提升。</p>
+      </div>
+      <div class="card p-6">
+        <p class="latin gold text-xs">MOAT 02</p>
+        <h3 class="serif text-xl font-bold mt-1">垂直知识库深度</h3>
+        <p class="text-sm text-[#cbb7ef] mt-2">已建成行业最大小六壬 / 易学语料库（古籍 + 名师批注 + 高质量问答），通用大模型半年内不可复制。</p>
+      </div>
+      <div class="card p-6">
+        <p class="latin gold text-xs">MOAT 03</p>
+        <h3 class="serif text-xl font-bold mt-1">对话工程能力</h3>
+        <p class="text-sm text-[#cbb7ef] mt-2">多轮追问 + 共情话术 + 安全过滤，是<b class="gold">复杂工程系统</b>，不是 prompt 套壳。</p>
+      </div>
+      <div class="card p-6">
+        <p class="latin gold text-xs">MOAT 04</p>
+        <h3 class="serif text-xl font-bold mt-1">品牌先发</h3>
+        <p class="text-sm text-[#cbb7ef] mt-2">"全球第一款专业级小六壬 AI"——抢先占领品类心智，玄学品类天然<b class="gold">赢家通吃</b>。</p>
+      </div>
+    </div>
+
+    <div class="col-span-5 card p-6 flex flex-col">
+      <p class="latin gold text-xs">DATA FLYWHEEL</p>
+      <h3 class="serif text-lg font-bold mt-1">数据飞轮示意</h3>
+      <div class="flex-1 flex items-center justify-center mt-2 relative">
+        <div class="taiji" style="width:230px;height:230px;"></div>
+        <div class="absolute inset-0 flex flex-col items-center justify-between py-6 text-[12px] tracking-wider">
+          <span class="latin gold bg-[var(--ink-2)] px-2 py-1 rounded">USERS ↑</span>
+          <span class="latin gold bg-[var(--ink-2)] px-2 py-1 rounded self-end">DATA ↑</span>
+          <span class="latin gold bg-[var(--ink-2)] px-2 py-1 rounded self-start">MODEL ↑</span>
+          <span class="latin gold bg-[var(--ink-2)] px-2 py-1 rounded">RETENTION ↑</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ppftr"><span>RBW · Mystic Intelligence Inc.</span><span class="latin">19 / 22</span></div>
+</section>
+
+<!-- ========================= 20. ROADMAP ========================= -->
+<section class="slide" data-title="路线图">
+  <div class="pphdr"><span class="brandmark"><span class="dot"></span><span class="latin">CHAPTER IX · ROADMAP</span></span><span>第九章 · 路线图与里程碑</span></div>
+
+  <div>
+    <p class="latin gold text-xs">ROADMAP · 12 MONTHS</p>
+    <h2 class="serif text-4xl font-bold mt-1">从全球上线到全球玄学 AI 第一品牌</h2>
+  </div>
+
+  <div class="flex-1 mt-10 relative">
+    <div class="absolute left-0 right-0 top-1/2 h-[2px] bg-gradient-to-r from-transparent via-[var(--gold)] to-transparent"></div>
+    <div class="grid grid-cols-4 gap-6 relative">
+      <div class="card p-6">
+        <div class="latin gold text-xs">M1 · LAUNCH</div>
+        <h3 class="serif text-2xl font-bold mt-1">全球上线</h3>
+        <ul class="text-sm text-[#cbb7ef] mt-3 space-y-1 list-disc list-inside">
+          <li>首发 5 国语言</li>
+          <li>iOS / Android / Web 三端</li>
+          <li>Product Hunt 首发</li>
+          <li>目标 30 万下载</li>
+        </ul>
+      </div>
+      <div class="card p-6">
+        <div class="latin gold text-xs">M3 · GROWTH</div>
+        <h3 class="serif text-2xl font-bold mt-1">百万用户</h3>
+        <ul class="text-sm text-[#cbb7ef] mt-3 space-y-1 list-disc list-inside">
+          <li>MAU 100 万</li>
+          <li>启动月度会员制</li>
+          <li>开放年度大运盘</li>
+          <li>东南亚 + 日韩破圈</li>
+        </ul>
+      </div>
+      <div class="card p-6">
+        <div class="latin gold text-xs">M6 · EXPANSION</div>
+        <h3 class="serif text-2xl font-bold mt-1">品类扩张</h3>
+        <ul class="text-sm text-[#cbb7ef] mt-3 space-y-1 list-disc list-inside">
+          <li>塔罗 / 星座上线</li>
+          <li>紫微斗数 / 八字</li>
+          <li>欧美市场重点投放</li>
+          <li>B 端心理机构合作</li>
+        </ul>
+      </div>
+      <div class="card p-6" style="border-color:rgba(212,175,55,.7);">
+        <div class="latin gold text-xs">M12 · NO.1</div>
+        <h3 class="serif text-2xl font-bold mt-1 gold-grad">全球第一</h3>
+        <ul class="text-sm text-[#cbb7ef] mt-3 space-y-1 list-disc list-inside">
+          <li>MAU 1000 万 +</li>
+          <li>年化收入 ¥6 亿 +</li>
+          <li>全球玄学 AI 第一品牌</li>
+          <li>启动 B+ / C 轮</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="ppftr"><span>RBW · Mystic Intelligence Inc.</span><span class="latin">20 / 22</span></div>
+</section>
+
+<!-- ========================= 21. TEAM & ASK ========================= -->
+<section class="slide" data-title="团队与 Ask">
+  <div class="pphdr"><span class="brandmark"><span class="dot"></span><span class="latin">CHAPTER X · TEAM & ASK</span></span><span>第十章 · 团队与诉求</span></div>
+
+  <div>
+    <p class="latin gold text-xs">TEAM & ASK</p>
+    <h2 class="serif text-4xl font-bold mt-1">最懂玄学的 AI 团队，正在寻找一起改写品类的伙伴</h2>
+  </div>
+
+  <div class="flex-1 grid grid-cols-12 gap-6 mt-8">
+    <div class="col-span-7 grid grid-cols-2 gap-5">
+      <div class="card p-6">
+        <p class="latin gold text-xs">FOUNDER / CEO</p>
+        <h3 class="serif text-xl font-bold mt-1">[ 姓名 ]</h3>
+        <p class="text-sm text-[#cbb7ef] mt-2">[ 背景占位 · 互联网 / AI / 玄学跨界 10 年 ]</p>
+      </div>
+      <div class="card p-6">
+        <p class="latin gold text-xs">CTO / AI LEAD</p>
+        <h3 class="serif text-xl font-bold mt-1">[ 姓名 ]</h3>
+        <p class="text-sm text-[#cbb7ef] mt-2">[ 背景占位 · 头部大厂 LLM / 对话系统负责人 ]</p>
+      </div>
+      <div class="card p-6">
+        <p class="latin gold text-xs">CHIEF MYSTIC</p>
+        <h3 class="serif text-xl font-bold mt-1">[ 姓名 ]</h3>
+        <p class="text-sm text-[#cbb7ef] mt-2">[ 背景占位 · 30 年小六壬 / 易学传承 ]</p>
+      </div>
+      <div class="card p-6">
+        <p class="latin gold text-xs">HEAD OF GLOBAL</p>
+        <h3 class="serif text-xl font-bold mt-1">[ 姓名 ]</h3>
+        <p class="text-sm text-[#cbb7ef] mt-2">[ 背景占位 · 全球化产品 / 增长 ]</p>
+      </div>
+    </div>
+
+    <div class="col-span-5 card p-6" style="border-color:rgba(212,175,55,.6);">
+      <p class="latin gold text-xs">OUR ASK</p>
+      <h3 class="serif text-2xl font-bold mt-1">我们正在寻找</h3>
+      <div class="mt-4 space-y-4 text-sm text-[#cbb7ef]">
+        <div><b class="gold">资金 · </b>$ [ X ] M 战略轮，用于全球化投放与多语言扩张。</div>
+        <div><b class="gold">资源 · </b>TikTok / Instagram / Product Hunt 首发资源位、海外 KOL 矩阵。</div>
+        <div><b class="gold">伙伴 · </b>心理健康机构、出海发行、本地化合规法务。</div>
+      </div>
+      <div class="mt-6 pt-4 border-t border-[rgba(212,175,55,.3)]">
+        <p class="latin gold text-xs">CONTACT</p>
+        <p class="serif text-base mt-1">contact@[your-domain].com</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ppftr"><span>RBW · Mystic Intelligence Inc.</span><span class="latin">21 / 22</span></div>
+</section>
+
+<!-- ========================= 22. THANK YOU ========================= -->
+<section class="slide" data-title="致谢">
+  <div class="pphdr"><span class="brandmark"><span class="dot"></span><span class="latin">THANK YOU</span></span><span>谢谢聆听</span></div>
+
+  <div class="flex-1 grid grid-cols-12 items-center gap-12">
+    <div class="col-span-7">
+      <p class="latin gold">THE NEXT BILLION-USER ORACLE</p>
+      <h2 class="serif font-black leading-[1.05] text-[72px] mt-2">让千年智慧，<br/><span class="gold-grad">触手可及</span>。</h2>
+      <p class="text-lg text-[#cbb7ef] mt-8">下个月，全球见。</p>
+      <p class="latin gold mt-2 text-sm">SEE YOU GLOBALLY · NEXT MONTH</p>
+
+      <div class="mt-10 flex gap-3">
+        <span class="chip">中文</span>
+        <span class="chip">EN</span>
+        <span class="chip">日本語</span>
+        <span class="chip">한국어</span>
+        <span class="chip">ES</span>
+        <span class="chip">FR</span>
+        <span class="chip">عربي</span>
+        <span class="chip">PT</span>
+      </div>
+    </div>
+    <div class="col-span-5 flex justify-center items-center relative">
+      <div class="bagua" style="width:480px;height:480px;left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+      <div class="bagua" style="width:360px;height:360px;left:50%;top:50%;transform:translate(-50%,-50%);"></div>
+      <div class="taiji" style="width:260px;height:260px;"></div>
+    </div>
+  </div>
+
+  <div class="ppftr"><span>RBW · Mystic Intelligence Inc.</span><span class="latin">22 / 22</span></div>
+</section>
+
+</main>
+
+<script>
+/* ===================== Navigation & paging ===================== */
+const deck = document.getElementById('deck');
+const slides = [...document.querySelectorAll('.slide')];
+const nav = document.getElementById('nav');
+slides.forEach((s,i)=>{
+  const a=document.createElement('a');
+  a.href='#'; a.title=s.dataset.title;
+  a.onclick=e=>{e.preventDefault();s.scrollIntoView({behavior:'smooth'});};
+  nav.appendChild(a);
+});
+document.getElementById('pageTot').textContent = String(slides.length).padStart(2,'0');
+const pageIdx = document.getElementById('pageIdx');
+const io = new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){
+      const i = slides.indexOf(e.target)+1;
+      pageIdx.textContent = String(i).padStart(2,'0');
+    }
+  });
+},{root:deck,threshold:.6});
+slides.forEach(s=>io.observe(s));
+
+document.addEventListener('keydown',e=>{
+  const i = slides.findIndex(s=>{
+    const r=s.getBoundingClientRect(); return r.top>=-10 && r.top<window.innerHeight*0.5;
+  });
+  if(['ArrowDown','ArrowRight','PageDown',' '].includes(e.key)){
+    e.preventDefault();
+    slides[Math.min(slides.length-1,(i<0?0:i)+1)].scrollIntoView({behavior:'smooth'});
+  }
+  if(['ArrowUp','ArrowLeft','PageUp'].includes(e.key)){
+    e.preventDefault();
+    slides[Math.max(0,(i<0?0:i)-1)].scrollIntoView({behavior:'smooth'});
+  }
+});
+
+/* ===================== Countdown to launch (T+30d) ===================== */
+const target = new Date(); target.setDate(target.getDate()+30); target.setHours(20,0,0,0);
+function tick(){
+  const now=new Date(); let s=Math.max(0,Math.floor((target-now)/1000));
+  const d=Math.floor(s/86400); s-=d*86400;
+  const h=Math.floor(s/3600);  s-=h*3600;
+  const m=Math.floor(s/60);    s-=m*60;
+  const f=n=>String(n).padStart(2,'0');
+  document.getElementById('cdD').textContent=f(d);
+  document.getElementById('cdH').textContent=f(h);
+  document.getElementById('cdM').textContent=f(m);
+  document.getElementById('cdS').textContent=f(s);
+}
+tick(); setInterval(tick,1000);
+
+/* ===================== Chart.js global theme ===================== */
+Chart.defaults.color = '#cbb7ef';
+Chart.defaults.font.family = "'Noto Sans SC', system-ui, sans-serif";
+Chart.defaults.borderColor = 'rgba(212,175,55,.18)';
+const GOLD = '#d4af37', GOLD2='#f4d77a', PURPLE='#6b3fa0', PURPLE2='#a980e6', INK='#0b0712';
+
+function gridOpts(){
+  return {
+    grid:{color:'rgba(212,175,55,.10)'},
+    ticks:{color:'#b9a7e0'}
+  };
+}
+
+/* Persona radar */
+new Chart(document.getElementById('radarUsers'),{
+  type:'radar',
+  data:{
+    labels:['焦虑情绪','付费力','社交分享','好奇心','文化亲近','留存意愿'],
+    datasets:[
+      {label:'Z 世代',data:[9,6,9,8,6,7],borderColor:GOLD2,backgroundColor:'rgba(244,215,122,.18)'},
+      {label:'职场高压',data:[8,8,4,5,8,8],borderColor:PURPLE2,backgroundColor:'rgba(169,128,230,.18)'},
+      {label:'海外华人',data:[7,9,6,7,10,9],borderColor:'#7adfb6',backgroundColor:'rgba(122,223,182,.15)'},
+      {label:'欧美神秘学爱好者',data:[7,7,9,10,5,6],borderColor:'#f3a3a3',backgroundColor:'rgba(243,163,163,.15)'}
+    ]
+  },
+  options:{
+    plugins:{legend:{position:'bottom'}},
+    scales:{r:{angleLines:{color:'rgba(212,175,55,.2)'},grid:{color:'rgba(212,175,55,.15)'},
+      pointLabels:{color:'#e9d8ff',font:{size:11}},
+      ticks:{display:false,stepSize:2},suggestedMin:0,suggestedMax:10}}
+  }
+});
+
+/* Anxiety/depression bar */
+new Chart(document.getElementById('barAnxiety'),{
+  type:'bar',
+  data:{
+    labels:['2010','2015','2019','2020','2022','2024E'],
+    datasets:[
+      {label:'焦虑症（亿人）',data:[2.4,2.9,3.0,3.7,4.0,4.3],backgroundColor:GOLD,borderRadius:6},
+      {label:'抑郁症（亿人）',data:[2.0,2.5,2.6,3.2,3.5,3.7],backgroundColor:PURPLE2,borderRadius:6}
+    ]
+  },
+  options:{plugins:{legend:{position:'bottom'}},scales:{x:gridOpts(),y:gridOpts()}}
+});
+
+/* Spiritual market */
+new Chart(document.getElementById('barSpiritual'),{
+  type:'bar',
+  data:{
+    labels:['2018','2020','2022','2024','2026E'],
+    datasets:[{
+      label:'灵性 / 占卜 / 身心市场（十亿美元）',
+      data:[150,170,200,220,260],
+      backgroundColor:(ctx)=>{
+        const c = ctx.chart.ctx.createLinearGradient(0,0,0,300);
+        c.addColorStop(0,GOLD2); c.addColorStop(1,PURPLE);
+        return c;
+      },
+      borderRadius:8
+    }]
+  },
+  options:{plugins:{legend:{display:false}},scales:{x:gridOpts(),y:gridOpts()}}
+});
+
+/* TikTok hashtags */
+new Chart(document.getElementById('barTiktok'),{
+  type:'bar',
+  data:{
+    labels:['#tarot','#astrology','#manifestation','#fengshui','#bazi','#xiaoliuren'],
+    datasets:[{
+      label:'累计播放量（十亿次）',
+      data:[105,82,46,12,3.2,0.8],
+      backgroundColor:[GOLD,GOLD,GOLD,PURPLE2,PURPLE2,'#f3a3a3'],
+      borderRadius:6
+    }]
+  },
+  options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:gridOpts(),y:gridOpts()}}
+});
+
+/* Bubble positioning */
+new Chart(document.getElementById('bubbleMap'),{
+  type:'bubble',
+  data:{
+    datasets:[
+      {label:'Co-Star',data:[{x:6,y:5,r:14}],backgroundColor:'rgba(169,128,230,.7)'},
+      {label:'Sanctuary',data:[{x:3,y:7,r:14}],backgroundColor:'rgba(169,128,230,.7)'},
+      {label:'问问',data:[{x:2,y:6,r:14}],backgroundColor:'rgba(169,128,230,.7)'},
+      {label:'测测',data:[{x:5,y:4,r:14}],backgroundColor:'rgba(169,128,230,.7)'},
+      {label:'GPT / 通用大模型',data:[{x:9,y:3,r:18}],backgroundColor:'rgba(243,163,163,.7)'},
+      {label:'我们 · 小六壬 AI',data:[{x:9,y:9,r:24}],backgroundColor:GOLD,borderColor:GOLD2,borderWidth:2}
+    ]
+  },
+  options:{
+    plugins:{legend:{position:'bottom'}},
+    scales:{
+      x:{title:{display:true,text:'AI 化程度  →',color:'#b9a7e0'},min:0,max:10,...gridOpts()},
+      y:{title:{display:true,text:'玄学专业度  →',color:'#b9a7e0'},min:0,max:10,...gridOpts()}
+    }
+  }
+});
+
+/* Capability radar */
+new Chart(document.getElementById('radarCap'),{
+  type:'radar',
+  data:{
+    labels:['玄学专业度','多轮对话','情绪共情','多语言','价格优势','响应速度'],
+    datasets:[
+      {label:'我们 · 小六壬 AI',data:[10,9.5,9,9,10,9.5],borderColor:GOLD2,backgroundColor:'rgba(244,215,122,.25)',borderWidth:2},
+      {label:'通用大模型',data:[4,7,5,9,6,9],borderColor:PURPLE2,backgroundColor:'rgba(169,128,230,.18)'},
+      {label:'真人大师',data:[9,8,8,2,2,3],borderColor:'#f3a3a3',backgroundColor:'rgba(243,163,163,.15)'},
+      {label:'传统占星 App',data:[5,3,4,6,7,8],borderColor:'#7adfb6',backgroundColor:'rgba(122,223,182,.15)'}
+    ]
+  },
+  options:{
+    plugins:{legend:{position:'bottom'}},
+    scales:{r:{suggestedMin:0,suggestedMax:10,
+      angleLines:{color:'rgba(212,175,55,.2)'},
+      grid:{color:'rgba(212,175,55,.15)'},
+      pointLabels:{color:'#e9d8ff',font:{size:12}},
+      ticks:{display:false}}}
+  }
+});
+
+/* Cost breakdown */
+new Chart(document.getElementById('barCost'),{
+  type:'bar',
+  data:{
+    labels:['LLM 推理','知识库检索','合规与安全','云资源/带宽'],
+    datasets:[{
+      label:'单次成本（¥）',
+      data:[0.085,0.020,0.015,0.020],
+      backgroundColor:[GOLD,GOLD2,PURPLE2,'#7adfb6'],
+      borderRadius:6
+    }]
+  },
+  options:{
+    plugins:{legend:{display:false}},
+    scales:{x:gridOpts(),y:{...gridOpts(),ticks:{color:'#b9a7e0',callback:v=>'¥'+v}}}
+  }
+});
+
+/* Price comparison */
+new Chart(document.getElementById('barPrice'),{
+  type:'bar',
+  data:{
+    labels:['我们 · 小六壬 AI','测测（高级解读）','Co-Star Plus（折算）','问问 真人塔罗','线下真人大师 (低)','线下真人大师 (高)'],
+    datasets:[{
+      label:'用户为单个问题花费（¥）',
+      data:[3.5,12,18,45,80,500],
+      backgroundColor:(c)=> c.dataIndex===0 ? GOLD : 'rgba(169,128,230,.75)',
+      borderColor:(c)=> c.dataIndex===0 ? GOLD2 : 'transparent',
+      borderWidth:(c)=> c.dataIndex===0 ? 2 : 0,
+      borderRadius:6
+    }]
+  },
+  options:{
+    indexAxis:'y',
+    plugins:{legend:{display:false},
+      tooltip:{callbacks:{label:c=>'¥ '+c.parsed.x}}},
+    scales:{x:{...gridOpts(),ticks:{color:'#b9a7e0',callback:v=>'¥'+v}},y:gridOpts()}
+  }
+});
+
+/* Revenue line */
+const months=['M1','M2','M3','M4','M5','M6','M7','M8','M9','M10','M11','M12'];
+new Chart(document.getElementById('lineRev'),{
+  type:'line',
+  data:{
+    labels:months,
+    datasets:[
+      {label:'保守',data:[1.2,2.0,3.0,4.2,5.5,6.8,8.0,9.0,10.0,11.0,12.0,13.0],borderColor:'#7adfb6',backgroundColor:'rgba(122,223,182,.10)',tension:.35,fill:true},
+      {label:'中性 (Base)',data:[2.0,4.0,7.0,11,16,22,30,38,46,54,62,67],borderColor:GOLD2,backgroundColor:'rgba(244,215,122,.15)',tension:.35,fill:true,borderWidth:2.5},
+      {label:'乐观',data:[3.0,7.0,15,28,46,70,100,135,170,200,230,240],borderColor:PURPLE2,backgroundColor:'rgba(169,128,230,.10)',tension:.35,fill:true}
+    ]
+  },
+  options:{
+    plugins:{legend:{position:'bottom'}},
+    scales:{x:gridOpts(),y:{...gridOpts(),ticks:{color:'#b9a7e0',callback:v=>'¥'+v+'M'}}}
+  }
+});
+
+/* Language priority */
+new Chart(document.getElementById('barLang'),{
+  type:'bar',
+  data:{
+    labels:['中文','英语','日语','韩语','西班牙语','葡萄牙语','法语','阿拉伯语'],
+    datasets:[{
+      label:'市场吸引力评分（10 分制）',
+      data:[10,9.5,8.8,8.2,7.5,6.8,6.5,7.0],
+      backgroundColor:[GOLD,GOLD2,PURPLE2,PURPLE2,'#7adfb6','#7adfb6','#7adfb6','#f3a3a3'],
+      borderRadius:6
+    }]
+  },
+  options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{...gridOpts(),min:0,max:10},y:gridOpts()}}
+});
+
+/* Funnel (use bar) */
+new Chart(document.getElementById('barFunnel'),{
+  type:'bar',
+  data:{
+    labels:['触达 (Impr.)','点击','下载','注册','首次起卦','付费'],
+    datasets:[{
+      label:'用户数（万）',
+      data:[8000,640,180,120,90,12],
+      backgroundColor:(c)=>{
+        const cs=['#a980e6','#b48fe9','#c79fec','#d8b1f0','#e8c8f3','#d4af37'];
+        return cs[c.dataIndex];
+      },
+      borderRadius:8
+    }]
+  },
+  options:{
+    plugins:{legend:{display:false},
+      tooltip:{callbacks:{label:c=>c.parsed.y+' 万人'}}},
+    scales:{x:gridOpts(),y:{...gridOpts(),type:'logarithmic',ticks:{color:'#b9a7e0',callback:v=>v+'万'}}}
+  }
+});
+</script>
+</body>
+</html>
